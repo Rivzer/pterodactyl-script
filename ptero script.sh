@@ -75,7 +75,7 @@ echo "----------------------------------"
 echo "[x] Setting up pteroq service..."
 echo "----------------------------------"
 sleep 1;
-curl -o /etc/systemd/system/pteroq.service https://raw.githubusercontent.com/Rivzer/pterodactyl-script/main/pteroq.service;
+curl -o /etc/systemd/system/pteroq.service https://raw.githubusercontent.com/Rivzer/pterodactyl-script/main/pteroq.service
 sudo systemctl enable --now redis-server
 sudo systemctl enable --now pteroq.service
 echo "----------------------------------"
@@ -85,16 +85,17 @@ sleep 1;
 echo "----------------------------------"
 echo "[x] Please giveup your VPS / Server Ip Address"
 echo "----------------------------------"
+rm /etc/nginx/sites-enabled/default
 read FQDN;
-curl -o /etc/nginx/sites-available/pterodactyl.conf https://raw.githubusercontent.com/VilhelmPrytz/pterodactyl-installer/master/configs/nginx.conf;
-sed -i -e "s/<domain>/${FQDN}/g" /etc/nginx/sites-available/pterodactyl.conf;
-sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf;
+curl -o /etc/nginx/sites-available/pterodactyl.conf https://raw.githubusercontent.com/Rivzer/pterodactyl-script/main/pterodactyl.conf
+sed -i -e "s/<domain>/${FQDN}/g" /etc/nginx/sites-available/pterodactyl.conf
+sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
 echo "----------------------------------"
 echo "[x] Starting web server..."
 echo "----------------------------------"
-service apache2 stop;
-service nginx start;
-systemctl restart nginx;
+service apache2 stop
+service nginx start
+systemctl restart nginx
 echo "[x] End of panel installation, the daemon installation will start in 15 seconds... (PRESS CTRL + C IF NOTHING HAS CHANGED IN ANYTHING! OR If you wish yo do no daemon installation!)"
 sleep 15;
 echo "----------------------------------"
@@ -102,26 +103,24 @@ echo "[x] Starting installation daemon"
 echo "[x] Docker is being installed ..."
 echo "----------------------------------"
 cd
-curl -sSL https://get.docker.com/ | CHANNEL=stable bash;
-systemctl enable docker;
-GRUB_CMDLINE_LINUX_DEFAULT="swapaccount=1";
+curl -sSL https://get.docker.com/ | CHANNEL=stable bash
+systemctl enable --now docker
 echo "----------------------------------"
 echo "[x] Installing node.js"
 echo "----------------------------------"
-curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -;
+curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -;
 apt -y install nodejs make gcc g++;
 echo "----------------------------------"
-echo "[x] Installing daemon"
+echo "[x] Installing Wings (Node)"
 echo "----------------------------------"
-mkdir -p /srv/daemon /srv/daemon-data;
-cd /srv/daemon;
-curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.13/daemon.tar.gz | tar --strip-components=1 -xzv;
-npm install --only=production --no-audit --unsafe-perm;
-curl -o /etc/systemd/system/wings.service https://raw.githubusercontent.com/VilhelmPrytz/pterodactyl-installer/master/configs/wings.service;
-systemctl enable --now wings;
-systemctl stop wings;
-echo "[x] Daemon is installed, only a node has to be created on the panel & put in the configuration onto /srv/daemon/config/core.json once you have inserted it you can start the daemon with systemctl start wings"
+mkdir -p /etc/pterodactyl
+curl -L -o /usr/local/bin/wings "https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_$([[ "$(uname -m)" == "x86_64" ]] && echo "amd64" || echo "arm64")"
+chmod u+x /usr/local/bin/wings
+curl -o /etc/systemd/system/wings.service https://raw.githubusercontent.com/Rivzer/pterodactyl-script/main/wings.service
+systemctl enable --now wings
+systemctl stop wings
+echo "[x] Wings is installed, only a node has to be created on the panel & put in the configuration onto /etc/pterodactyl/config.yml once you have inserted it you can start the node with systemctl start wings"
 echo "----------------------------------"
 echo "Thank you for using this script!"
-echo "Made by ItsJust4You"
+echo "Made by Rivzer"
 echo "----------------------------------"
