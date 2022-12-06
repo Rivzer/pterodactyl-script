@@ -93,8 +93,8 @@ sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/
 echo "----------------------------------"
 echo "[x] Starting web server..."
 echo "----------------------------------"
-service apache2 stop
 service nginx start
+chown -R www-data:www-data /var/www/pterodactyl/*
 systemctl restart nginx
 echo "[x] End of panel installation, the daemon installation will start in 15 seconds... (PRESS CTRL + C IF NOTHING HAS CHANGED IN ANYTHING! OR If you wish yo do no daemon installation!)"
 sleep 15;
@@ -119,6 +119,7 @@ chmod u+x /usr/local/bin/wings
 curl -o /etc/systemd/system/wings.service https://raw.githubusercontent.com/Rivzer/pterodactyl-script/main/wings.service
 systemctl enable --now wings
 systemctl stop wings
+chown -R www-data:www-data /var/www/pterodactyl/*
 echo "[x] Wings is installed, only a node has to be created on the panel & put in the configuration onto /etc/pterodactyl/config.yml once you have inserted it you can start the node with systemctl start wings"
 echo "----------------------------------"
 echo "Thank you for using this script!"
