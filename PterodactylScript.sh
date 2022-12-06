@@ -38,7 +38,7 @@ echo "----------------------------------"
 sleep 0.5;
 echo "[x] Choose a password..."
 read MYSQL_PASS;
-echo "When asking for a password, just hit 7 times enter!"
+echo "When asking for a password, just hit enter!"
 mysql -u root -p -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASS}';"
 mysql -u root -p -e "CREATE DATABASE panel;"
 mysql -u root -p -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
@@ -50,8 +50,8 @@ echo "----------------------------------"
 sleep 1;
 cp .env.example .env
 composer install --no-dev --optimize-autoloader
-php artisan key:generate --force
 curl -o /var/www/pterodactyl/.env https://raw.githubusercontent.com/Rivzer/pterodactyl-script/main/.env
+php artisan key:generate --force
 sed -i -e "s|DB_PASSWORD=|DB_PASSWORD=${MYSQL_PASS}|g" /var/www/pterodactyl/.env
 sleep 0.5;
 echo "----------------------------------"
